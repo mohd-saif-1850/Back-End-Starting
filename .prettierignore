@@ -1,0 +1,28 @@
+# Ignore build outputs
+build
+dist
+.next
+out
+.temp
+
+# Dependency folders
+node_modules
+
+# Coverage
+coverage
+
+# Logs
+*.log
+
+# Environment files
+.env
+.env.*
+
+# OS / IDE files
+.DS_Store
+Thumbs.db
+.vscode
+.idea
+
+# Other generated files
+*.tsbuildinfo
