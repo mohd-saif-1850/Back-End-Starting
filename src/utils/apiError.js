@@ -3,7 +3,7 @@ class apiError extends Error {
             statusCode,
             message = "Maybe Your Code Is Wrong Bewakuf",
             errors = [],
-            statck = ""
+            stack = ""
         ){
             super(message)
             this.statusCode = statusCode,
@@ -11,7 +11,7 @@ class apiError extends Error {
             this.message = message,
             this.success = false,
             this.errors = errors,
-            statck ? this.stack = statck : Error.captureStackTrace(this,this.constructor)
+            stack ? this.stack = stack : Error.captureStackTrace(this,this.constructor)
         }
 
 }
