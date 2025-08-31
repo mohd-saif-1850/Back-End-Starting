@@ -1,4 +1,4 @@
-import apiError from "./apiError"
+import apiError from "./apiError.js"
 
 class apiResponse {
     constructor(statusCode, data, message = "Success"){

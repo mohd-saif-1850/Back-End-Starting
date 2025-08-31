@@ -7,11 +7,11 @@ import apiResponse from "../utils/apiResponse.js"
 const registerUser = asyncHandler( async (req,res) => {
     const {username, email,fullName,password} = req.body
     
-    if([fullName, username, email, password].some( (fields) => fields ?.trim() === "" )){
+    if([fullName, username, email, password].some( (fields) => fields?.trim() === "" )){
         throw new apiError(400, "All Fields Are Required !")
     }
 
-    const existedUser = User.findOne({
+    const existedUser = await User.findOne({
         $or : [{ username },{ email }]
     })
 
@@ -19,18 +19,20 @@ const registerUser = asyncHandler( async (req,res) => {
         throw new apiError(409, "Email or Username Already Exist !")
     }
 
-    const avatarLocalPath = req.files?.avatar[0]?.path
-    const coverImageLocalPath = req.files?.coverImage[0]?.path
+    const avatarLocalPath = req.files?.avatar?.[0]?.path
+    const coverImageLocalPath = req.files?.coverImage?.[0]?.path
 
     if (!avatarLocalPath) {
-        throw new apiError(400, "Avatar is Required !")
+        throw new apiError(400, "Local Avatar is Required !")
     }
 
     const avatarUpload = await cloudinaryUpload(avatarLocalPath)
-    const coverImageUpload = await cloudinaryUpload(coverImageLocalPath)
+    const coverImageUpload = coverImageLocalPath ?
+     await cloudinaryUpload(coverImageLocalPath) : 
+     null
 
     if (!avatarUpload) {
-        throw new apiError(400, "Avatar is Required !")
+        throw new apiError(400, "Avatar upload failed on Cloudinary")
     }
 
     const createUser = await User.create({
@@ -49,7 +51,7 @@ const registerUser = asyncHandler( async (req,res) => {
     }
 
     res.status(201).json(
-        new apiResponse(201,createUser,`${this.username} Created Successfully !`)
+        new apiResponse(201,createUser,`${username} Created Successfully !`)
     )
     
 })
