@@ -3,6 +3,7 @@ import apiError from "../utils/apiError.js"
 import { User } from "../models/user.model.js"
 import cloudinaryUpload from "../utils/cloudinary.js"
 import apiResponse from "../utils/apiResponse.js"
+import generateAccessAndRefreshToken from "../utils/tokens.js"
 
 const registerUser = asyncHandler( async (req,res) => {
     const {username, email,fullName,password} = req.body
@@ -56,4 +57,58 @@ const registerUser = asyncHandler( async (req,res) => {
     
 })
 
-export default registerUser;
+const loginUser = asyncHandler( async (req,res) => {
+    const { username, email, password } = req.body
+
+    if (!username || !email ) {
+        throw new apiError(400, "Please Give the Username or Email !")
+    }
+    
+    if (!password) {
+        throw new apiError(400, "Please Give the Password !")
+    }
+
+    const user = User.findOne(
+        {
+            $or : [ { username }, { email } ]
+        }
+    )
+
+    if (!user) {
+        throw new apiError(404, "User Not Found !")
+    }
+
+    const isPasswordValid = user.isPasswordCorrect(password)
+
+    if (!isPasswordValid) {
+        throw new apiError(402,"Password is Incorrect !")
+    }
+
+    const {accessToken, refreshToken} = await generateAccessAndRefreshToken(user._id)
+
+    const loggedInUser = await User.findById(user._id).select("-password -refreshToken")
+
+    const options = {
+        httpOnly : true,
+        secure : true
+    }
+
+    return res.status(200)
+    .cookie("accessToken", accessToken, options)
+    .cookie("refreshToken", refreshToken, options)
+    .json(
+        new apiResponse(
+            200,
+            {
+                user: loggedInUser,
+                accessToken,
+                refreshToken
+            },
+            `${username || email} Logged In !`
+        )
+    )
+})
+
+
+
+export {registerUser,loginUser}
