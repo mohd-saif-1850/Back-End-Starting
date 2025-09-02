@@ -152,7 +152,7 @@ const newAccessToken = asyncHandler( async (req,res) => {
             throw new apiError(401, "Invalid Refresh Token !")
         }
     
-        if (decodedToken !== user?.refreshToken) {
+        if ( userRefreshToken !== user?.refreshToken) {
             throw new apiError(401,"Refresh Token Either Used or Expired !")
         }
     
