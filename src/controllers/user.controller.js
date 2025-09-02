@@ -260,17 +260,19 @@ const changeCoverImage = asyncHandler(async (req,res) => {
     return res.status(200).json(new apiResponse(200,updatedCoverImage,"User Cover Image Changed Successfully !"))
 })
 
-const userChannel = asyncHandler(async (req,res) => {
-    const {username} = req.params
+const userChannel = asyncHandler(async (req, res) => {
+    const { username } = req.params;
     if (!username) {
-        throw new apiError(401,"Username Not Found !")
+        throw new apiError(401, "Username Not Found !");
     }
 
     const channel = await User.aggregate([
         {
             $match: {
-                username: username?.toLowerCase()
-            },
+                username: username.toLowerCase()
+            }
+        },
+        {
             $lookup: {
                 from: "subscriptions",
                 localField: "_id",
@@ -288,15 +290,11 @@ const userChannel = asyncHandler(async (req,res) => {
         },
         {
             $addFields: {
-                countSubscribers:{
-                    $size: "$subscribers"
-                },
-                countSubscribed: {
-                    $size: "$subscribed"
-                },
+                countSubscribers: { $size: "$subscribers" },
+                countSubscribed: { $size: "$subscribed" },
                 isSubscribed: {
                     $cond: {
-                        if: {$in: [req.user?._id, "$subscribers.subscribe"]},
+                        if: { $in: [req.user?._id, "$subscribers.subscriber"] },
                         then: true,
                         else: false
                     }
@@ -313,17 +311,20 @@ const userChannel = asyncHandler(async (req,res) => {
                 countSubscribers: 1,
                 countSubscribed: 1,
                 isSubscribed: 1,
-                createdAt: 1,
+                createdAt: 1
             }
         }
-    ])
+    ]);
 
     if (!channel?.length) {
-    throw new apiError(404,"User Channel Not Found !")
-}
+        throw new apiError(404, "User Channel Not Found !");
+    }
 
-    return res.status(200).json(new apiResponse(200,channel[0],"User Channel Fetched Successfully !"))
-})
+    return res
+        .status(200)
+        .json(new apiResponse(200, channel[0], "User Channel Fetched Successfully !"));
+});
+
 
 
 
