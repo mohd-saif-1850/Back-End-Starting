@@ -5,6 +5,7 @@ import cloudinaryUpload from "../utils/cloudinary.js"
 import apiResponse from "../utils/apiResponse.js"
 import generateAccessAndRefreshToken from "../utils/tokens.js"
 import jwt from 'jsonwebtoken';
+import mongoose from "mongoose"
 
 const registerUser = asyncHandler( async (req,res) => {
     const {username, email,fullName,password} = req.body
@@ -325,8 +326,51 @@ const userChannel = asyncHandler(async (req, res) => {
         .json(new apiResponse(200, channel[0], "User Channel Fetched Successfully !"));
 });
 
+const userWatchHistory = asyncHandler(async (req,res) => {
+    const userHistory = await User.aggregate([
+        {
+            $match: {
+                _id: new mongoose.Types.ObjectId(req.user._id)
+            }
+        },
+        {
+            $lookup: {
+                from: "videos",
+                localField: "watchHistory",
+                foreignField: "_id",
+                as: "watchHistory",
+                pipeline: [
+                    {
+                        $lookup: {
+                        from: "users",
+                        localField: "owner",
+                        foreignField: "_id",
+                        as: "owner",
+                        pipeline: [{
+                            $project: {
+                                fullName: 1,
+                                username: 1,
+                                avatar: 1,
+                            }
+                        }]
+                    }
+                    },
+                    {
+                        $addFields: {
+                            owner: {
+                                $first: "$owner"
+                            }
+                        }
+                    }
+                ]
+            }
+        }
+    ])
 
+    return res.status(200).json(new apiResponse(200, userHistory[0].watchHistory,"User Watch History Fetched Successfully !"))
+})
 
 
 export {registerUser,loginUser,logoutUser,newAccessToken,
-        changePassword,currentUser,changeFullName,changeAvatar,changeCoverImage}
+        changePassword,currentUser,changeFullName,changeAvatar,
+        changeCoverImage,userChannel,userWatchHistory}
