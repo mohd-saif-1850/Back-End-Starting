@@ -179,4 +179,23 @@ const newAccessToken = asyncHandler( async (req,res) => {
     }
 })
 
-export {registerUser,loginUser,logoutUser,newAccessToken}
+const changePassword = asyncHandler( async (req,res) => {
+    const {oldPassword, newPassword, conPassword} = req.body
+    if (!(newPassword === conPassword)) {
+        throw new apiError(401,"Please Enter The Correct Confirm Password !")
+    }
+
+    const user = await User.findById(req.user._id)
+
+    const passwordCorrect = await user.isPasswordCorrect(oldPassword)
+    if (!passwordCorrect) {
+        throw new apiError(401, "Invalid Password !")
+    }
+
+    user.password = newPassword
+    await user.save({validateBeforeSave : false})
+
+    return res.status(200).json(new apiResponse(200,{}, "Password Changed Successfully !"))
+})
+
+export {registerUser,loginUser,logoutUser,newAccessToken,changePassword}
