@@ -181,9 +181,9 @@ const newAccessToken = asyncHandler( async (req,res) => {
 
 const changePassword = asyncHandler( async (req,res) => {
     const {oldPassword, newPassword, conPassword} = req.body
-    if (!(newPassword === conPassword)) {
-        throw new apiError(401,"Please Enter The Correct Confirm Password !")
-    }
+    if (newPassword !== conPassword) {
+    throw new apiError(400, "Confirm Password does not match New Password!");
+  }
 
     const user = await User.findById(req.user._id)
 
