@@ -202,4 +202,20 @@ const currentUser = asyncHandler (async (req,res) => {
     return res.status(200).json(new apiResponse(200, req.user, "Current User Fetched Successfully !"))
 })
 
-export {registerUser,loginUser,logoutUser,newAccessToken,changePassword,currentUser}
+const changeFullName = asyncHandler(async (req,res) => {
+    const {fullName} = req.body
+    if (!fullName) {
+        throw new apiError(401,"Please Give Full Name !")
+    }
+
+    const changedUser = User.findByIdAndUpdate(req.user._id,{
+        $set: {fullName}
+    },{new: true}).select("-password")
+    if (!changedUser) {
+        throw new apiError(404,"User Not Found !")
+    }
+
+    return req.status(200).json(new apiResponse(200, changedUser, "User Details Changed Successfully !"))
+})
+
+export {registerUser,loginUser,logoutUser,newAccessToken,changePassword,currentUser,changeFullName}
