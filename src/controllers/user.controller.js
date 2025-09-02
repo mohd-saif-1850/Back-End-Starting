@@ -260,5 +260,72 @@ const changeCoverImage = asyncHandler(async (req,res) => {
     return res.status(200).json(new apiResponse(200,updatedCoverImage,"User Cover Image Changed Successfully !"))
 })
 
+const userChannel = asyncHandler(async (req,res) => {
+    const {username} = req.params
+    if (!username) {
+        throw new apiError(401,"Username Not Found !")
+    }
+
+    const channel = await User.aggregate([
+        {
+            $match: {
+                username: username?.toLowerCase()
+            },
+            $lookup: {
+                from: "subscriptions",
+                localField: "_id",
+                foreignField: "channel",
+                as: "subscribers"
+            }
+        },
+        {
+            $lookup: {
+                from: "subscriptions",
+                localField: "_id",
+                foreignField: "subscriber",
+                as: "subscribed"
+            }
+        },
+        {
+            $addFields: {
+                countSubscribers:{
+                    $size: "$subscribers"
+                },
+                countSubscribed: {
+                    $size: "$subscribed"
+                },
+                isSubscribed: {
+                    $cond: {
+                        if: {$in: [req.user?._id, "$subscribers.subscribe"]},
+                        then: true,
+                        else: false
+                    }
+                }
+            }
+        },
+        {
+            $project: {
+                fullName: 1,
+                username: 1,
+                email: 1,
+                avatar: 1,
+                coverImage: 1,
+                countSubscribers: 1,
+                countSubscribed: 1,
+                isSubscribed: 1,
+                createdAt: 1,
+            }
+        }
+    ])
+
+    if (!channel?.length) {
+    throw new apiError(404,"User Channel Not Found !")
+}
+
+    return res.status(200).json(new apiResponse(200,channel[0],"User Channel Fetched Successfully !"))
+})
+
+
+
 export {registerUser,loginUser,logoutUser,newAccessToken,
         changePassword,currentUser,changeFullName,changeAvatar,changeCoverImage}
