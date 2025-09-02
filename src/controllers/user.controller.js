@@ -218,4 +218,46 @@ const changeFullName = asyncHandler(async (req,res) => {
     return req.status(200).json(new apiResponse(200, changedUser, "User Details Changed Successfully !"))
 })
 
-export {registerUser,loginUser,logoutUser,newAccessToken,changePassword,currentUser,changeFullName}
+const changeAvatar = asyncHandler(async (req,res) => {
+    const localAvatarPath = req.file?.path
+    if (!localAvatarPath) {
+        throw new apiError(401, "Avatar Is Not Found !")
+    }
+
+    const avatarPath = await cloudinaryUpload(localAvatarPath)
+    if (!avatarPath.url) {
+        throw new apiError(500, "Server Failed to Upload The Avatar !")
+    }
+
+    const updatedAvatar = await User.findByIdAndUpdate(
+        req.user?._id,
+        {
+            $set: {avatar: avatar.url}
+        },{new: true}
+    ).select("-password")
+
+    return res.status(200).json(new apiResponse(200,updatedAvatar,"User Avatar Changed Successfully !"))
+})
+
+const changeCoverImage = asyncHandler(async (req,res) => {
+    const localCoverImagePath = req.file?.path
+    if (!localCoverImagePath) {
+        throw new apiError(401, "Cover Image Is Not Found !")
+    }
+
+    const coverImagePath = await cloudinaryUpload(localCoverImagePath)
+    if (!coverImagePath.url) {
+        throw new apiError(500, "Server Failed to Upload The Avatar !")
+    }
+
+    const updatedCoverImage = await User.findByIdAndUpdate(
+        req.user?._id,
+        {
+            $set: {coverImage: coverImage.url}
+        },{new: true}
+    ).select("-password")
+
+    return res.status(200).json(new apiResponse(200,updatedCoverImage,"User Avatar Changed Successfully !"))
+})
+
+export {registerUser,loginUser,logoutUser,newAccessToken,changePassword,currentUser,changeFullName,changeAvatar}
