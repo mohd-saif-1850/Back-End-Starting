@@ -198,4 +198,8 @@ const changePassword = asyncHandler( async (req,res) => {
     return res.status(200).json(new apiResponse(200,{}, "Password Changed Successfully !"))
 })
 
-export {registerUser,loginUser,logoutUser,newAccessToken,changePassword}
+const currentUser = asyncHandler (async (req,res) => {
+    return res.status(200).json(new apiResponse(200, req.user, "Current User Fetched Successfully !"))
+})
+
+export {registerUser,loginUser,logoutUser,newAccessToken,changePassword,currentUser}
