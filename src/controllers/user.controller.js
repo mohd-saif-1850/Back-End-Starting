@@ -232,7 +232,7 @@ const changeAvatar = asyncHandler(async (req,res) => {
     const updatedAvatar = await User.findByIdAndUpdate(
         req.user?._id,
         {
-            $set: {avatar: avatar.url}
+            $set: {avatar: avatarPath.url}
         },{new: true}
     ).select("-password")
 
@@ -247,17 +247,18 @@ const changeCoverImage = asyncHandler(async (req,res) => {
 
     const coverImagePath = await cloudinaryUpload(localCoverImagePath)
     if (!coverImagePath.url) {
-        throw new apiError(500, "Server Failed to Upload The Avatar !")
+        throw new apiError(500, "Server Failed to Upload The Cover Image !")
     }
 
     const updatedCoverImage = await User.findByIdAndUpdate(
         req.user?._id,
         {
-            $set: {coverImage: coverImage.url}
+            $set: {coverImage: coverImagePath.url}
         },{new: true}
     ).select("-password")
 
-    return res.status(200).json(new apiResponse(200,updatedCoverImage,"User Avatar Changed Successfully !"))
+    return res.status(200).json(new apiResponse(200,updatedCoverImage,"User Cover Image Changed Successfully !"))
 })
 
-export {registerUser,loginUser,logoutUser,newAccessToken,changePassword,currentUser,changeFullName,changeAvatar}
+export {registerUser,loginUser,logoutUser,newAccessToken,
+        changePassword,currentUser,changeFullName,changeAvatar,changeCoverImage}
