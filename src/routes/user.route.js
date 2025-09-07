@@ -26,6 +26,7 @@ const router = Router()
     router.route("/current-user").get(verifyJWT,currentUser)
 
     router.route("/change-fullName").patch(verifyJWT, changeFullName)
+    // Avatar and Cover Image ( Always Available in Cloudinary Even after Updating/Changing )
     router.route("/change-avatar").patch(verifyJWT, upload.single("avatar"), changeAvatar)
     router.route("/change-cover-image").patch(verifyJWT, upload.single("coverImage"), changeCoverImage)
 
