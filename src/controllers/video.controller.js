@@ -50,7 +50,8 @@ const uploadVideo = asyncHandler( async (req,res) => {
         description,
         thumbnail : thumbnailUpload.url,
         videoFile : videoUpload.url,
-        duration : videoUpload.duration
+        duration : videoUpload.duration,
+        owner : req.user._id
     })
 
     return res.status(200).json(new apiResponse(200,newVideo,"Video Upload Successfully !"))
@@ -68,7 +69,7 @@ const updateVideoDetails = asyncHandler( async (req, res) => {
         throw new apiError(402,"Description is required !")
     }
 
-    const updateDetails = await Video.findByIdAndUpdate(req.video._id,{
+    const updateDetails = await Video.findByIdAndUpdate(req.params._id,{
         $set : {
             title,
             description
