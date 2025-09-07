@@ -1,3 +1,4 @@
+import mongoose from "mongoose";
 import apiError from "../utils/apiError.js";
 import asyncHandler from "../utils/asyncHandler.js";
 import cloudinaryUpload from "../utils/cloudinary.js";
@@ -56,4 +57,30 @@ const uploadVideo = asyncHandler( async (req,res) => {
 
 })
 
-export {uploadVideo}
+const updateVideoDetails = asyncHandler( async (req, res) => {
+    const {title, description} = req.body
+
+    if (!title) {
+        throw new apiError(402,"Title is required !")
+    }
+
+    if (!description) {
+        throw new apiError(402,"Description is required !")
+    }
+
+    const updateDetails = await Video.findByIdAndUpdate(req.video._id,{
+        $set : {
+            title,
+            description
+        }
+    },{new: true})
+
+    if (!updateDetails) {
+        throw new apiError(401,"No Video Found !")
+    }
+
+    return res.status(200)
+    .json(new apiResponse(200,updateDetails,"Title and Description Updated Successfully !"))
+})
+
+export {uploadVideo,updateVideoDetails}
