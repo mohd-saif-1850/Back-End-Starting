@@ -2,6 +2,7 @@ import { Router } from "express";
 import {registerUser, loginUser, logoutUser, newAccessToken, changePassword, currentUser, changeFullName, changeAvatar, changeCoverImage, userChannel, userWatchHistory} from "../controllers/user.controller.js";
 import {upload} from "../middlewares/multer.middleware.js"
 import verifyJWT from "../middlewares/auth.controller.js"
+import { uploadVideo } from "../controllers/video.controller.js";
 
 const router = Router()
 
@@ -33,4 +34,6 @@ const router = Router()
     router.route("/c/:username").get(verifyJWT,userChannel)
     router.route("/watch-history").get(verifyJWT,userWatchHistory)
 
+    // Video Routes
+    router.route("/video-upload").post(verifyJWT, uploadVideo)
 export default router;
