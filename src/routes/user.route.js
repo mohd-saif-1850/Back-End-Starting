@@ -35,5 +35,16 @@ const router = Router()
     router.route("/watch-history").get(verifyJWT,userWatchHistory)
 
     // Video Routes
-    router.route("/video-upload").post(verifyJWT, uploadVideo)
+    router.route("/video-upload").post(verifyJWT, upload.fields(
+        [{
+            name : "thumbnail",
+            maxCount : 1
+        },
+        {
+            name : "videoFile",
+            maxCount : 1
+        }]
+    ) ,uploadVideo)
+
+    
 export default router;
