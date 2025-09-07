@@ -54,7 +54,7 @@ const registerUser = asyncHandler( async (req,res) => {
     }
 
     res.status(201).json(
-        new apiResponse(201,createUser,`${username} Created Successfully !`)
+        new apiResponse(201,findUser,`${username} Created Successfully !`)
     )
     
 })
@@ -115,7 +115,7 @@ const logoutUser = asyncHandler(async (req,res) => {
     await User.findByIdAndUpdate(
         req.user._id,
         {
-            refreshToken: undefined
+            $unset : {refreshToken : ""}
         },
         {
             new: true
@@ -162,7 +162,7 @@ const newAccessToken = asyncHandler( async (req,res) => {
             secure : true
         }
     
-        const {accessToken,refreshTokenNew} = await generateAccessAndRefreshToken(user._id)
+        const {accessToken,refreshToken} = await generateAccessAndRefreshToken(user._id)
     
         return res.status(200)
         .clearCookie("accessToken", options)
@@ -306,7 +306,6 @@ const userChannel = asyncHandler(async (req, res) => {
             $project: {
                 fullName: 1,
                 username: 1,
-                email: 1,
                 avatar: 1,
                 coverImage: 1,
                 countSubscribers: 1,
@@ -367,7 +366,7 @@ const userWatchHistory = asyncHandler(async (req,res) => {
         }
     ])
 
-    if (userHistory === 0) {
+    if (userHistory.length === 0) {
         throw new apiError(400, "History Not Found !")
     }
     return res.status(200).json(new apiResponse(200, userHistory[0].watchHistory,"User Watch History Fetched Successfully !"))
