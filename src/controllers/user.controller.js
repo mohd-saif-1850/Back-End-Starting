@@ -80,10 +80,10 @@ const loginUser = asyncHandler( async (req,res) => {
         throw new apiError(404, "User Not Found !")
     }
 
-    const isPasswordValid = user.isPasswordCorrect(password)
+    const isPasswordValid = await user.isPasswordCorrect(password)
 
     if (!isPasswordValid) {
-        throw new apiError(402,"Password is Incorrect !")
+        throw new apiError(401,"Password is Incorrect !")
     }
 
     const {accessToken, refreshToken} = await generateAccessAndRefreshToken(user._id)
@@ -165,12 +165,12 @@ const newAccessToken = asyncHandler( async (req,res) => {
         const {accessToken,refreshTokenNew} = await generateAccessAndRefreshToken(user._id)
     
         return res.status(200)
-        .clearCookie("accessToken",accessToken,  options)
-        .clearCookie("refreshToken",refreshTokenNew, options)
+        .clearCookie("accessToken", options)
+        .clearCookie("refreshToken", options)
         .json(
             new apiResponse(
                 200,
-                {accessToken,refreshTokenNew},
+                {accessToken,refreshToken},
                 "New Access Token Created Successfully !"
             )
         )
@@ -209,14 +209,14 @@ const changeFullName = asyncHandler(async (req,res) => {
         throw new apiError(401,"Please Give Full Name !")
     }
 
-    const changedUser = User.findByIdAndUpdate(req.user._id,{
+    const changedUser = await User.findByIdAndUpdate(req.user._id,{
         $set: {fullName}
     },{new: true}).select("-password")
     if (!changedUser) {
         throw new apiError(404,"User Not Found !")
     }
 
-    return req.status(200).json(new apiResponse(200, changedUser, "User Details Changed Successfully !"))
+    return res.status(200).json(new apiResponse(200, changedUser, "User Details Changed Successfully !"))
 })
 
 const changeAvatar = asyncHandler(async (req,res) => {
@@ -367,6 +367,9 @@ const userWatchHistory = asyncHandler(async (req,res) => {
         }
     ])
 
+    if (userHistory === 0) {
+        throw new apiError(400, "History Not Found !")
+    }
     return res.status(200).json(new apiResponse(200, userHistory[0].watchHistory,"User Watch History Fetched Successfully !"))
 })
 
