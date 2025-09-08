@@ -2,7 +2,7 @@ import { Router } from "express";
 import {registerUser, loginUser, logoutUser, newAccessToken, changePassword, currentUser, changeFullName, changeAvatar, changeCoverImage, userChannel, userWatchHistory} from "../controllers/user.controller.js";
 import {upload} from "../middlewares/multer.middleware.js"
 import verifyJWT from "../middlewares/auth.controller.js"
-import { deleteVideo, getAllVideos, getVideo, togglePublishStatus, updateVideoDetails, uploadVideo } from "../controllers/video.controller.js";
+import { deleteVideo, getAllVideos, getMyVideos, getVideo, togglePublishStatus, updateVideoDetails, uploadVideo } from "../controllers/video.controller.js";
 
 const router = Router()
 
@@ -48,6 +48,7 @@ const router = Router()
     ) ,uploadVideo)
     router.route("/video").get(verifyJWT,getVideo)
     router.route("/all-videos").get(verifyJWT,getAllVideos)
+    router.route("/my-videos").get(verifyJWT,getMyVideos)
 
     router.route("/update-video-details").patch(verifyJWT,updateVideoDetails)
     router.route("/video-delete").delete(verifyJWT,deleteVideo)
