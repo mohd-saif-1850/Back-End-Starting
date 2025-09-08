@@ -2,7 +2,7 @@ import { Router } from "express";
 import {registerUser, loginUser, logoutUser, newAccessToken, changePassword, currentUser, changeFullName, changeAvatar, changeCoverImage, userChannel, userWatchHistory} from "../controllers/user.controller.js";
 import {upload} from "../middlewares/multer.middleware.js"
 import verifyJWT from "../middlewares/auth.controller.js"
-import { deleteVideo, updateVideoDetails, uploadVideo } from "../controllers/video.controller.js";
+import { deleteVideo, getVideo, updateVideoDetails, uploadVideo } from "../controllers/video.controller.js";
 
 const router = Router()
 
@@ -27,6 +27,7 @@ const router = Router()
     router.route("/current-user").get(verifyJWT,currentUser)
 
     router.route("/change-fullName").patch(verifyJWT, changeFullName)
+
     // Avatar and Cover Image ( Always Available in Cloudinary Even after Updating/Changing )
     router.route("/change-avatar").patch(verifyJWT, upload.single("avatar"), changeAvatar)
     router.route("/change-cover-image").patch(verifyJWT, upload.single("coverImage"), changeCoverImage)
@@ -45,8 +46,9 @@ const router = Router()
             maxCount : 1
         }]
     ) ,uploadVideo)
+    router.route("/video").get(verifyJWT,getVideo)
+
     router.route("/update-video-details").patch(verifyJWT,updateVideoDetails)
-    
     router.route("/video-delete").delete(verifyJWT,deleteVideo)
     
 export default router;
