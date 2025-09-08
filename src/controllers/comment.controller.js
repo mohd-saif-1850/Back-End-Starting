@@ -65,4 +65,15 @@ const deleteComment = asyncHandler( async(req,res) => {
     return res.status(200).json(new apiResponse(200,deleteCmt,"Comment Deleted Successfully !"))
 })
 
-export {createComment,updateComment,deleteComment}
+const userComments = asyncHandler( async(req,res) => {
+    
+    const comments = await Comment.find({owner: req.user._id})
+
+    if (!comments) {
+        throw new apiError(500,"Server Failed to Fetch Comments !")
+    }
+
+    return res.status(200).json(new apiResponse(200,comments,"Comments Fetched Successfully !"))
+})
+
+export {createComment,updateComment,deleteComment,userComments}
