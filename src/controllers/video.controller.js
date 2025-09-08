@@ -157,4 +157,15 @@ const getAllVideos = asyncHandler( async (req,res) => {
     return res.status(200).json(new apiResponse(200,allVideos,"All Videos Fetched Successfully !"))
 })
 
-export {uploadVideo,updateVideoDetails,deleteVideo,getVideo,togglePublishStatus,getAllVideos}
+const getMyVideos = asyncHandler( async(req,res) => {
+    const myVideos = await Video.findById({owner : req.user._id})
+
+    if (myVideos.length === 0) {
+        throw new apiError(402,"No Videos Found !")
+    }
+
+    return res.status(200,myVideos,"My Videos Fetched Successfully !")
+})
+
+
+export {uploadVideo,updateVideoDetails,deleteVideo,getVideo,togglePublishStatus,getAllVideos,getMyVideos}
