@@ -145,4 +145,4 @@ const togglePublishStatus = asyncHandler(async (req, res) => {
     return res.status(200).json(new apiResponse(200,togglePublish,`Video set to Public ${togglePublish.isPublished ? "Public" : "Private"} !`))
 })
 
-export {uploadVideo,updateVideoDetails,deleteVideo,getVideo}
+export {uploadVideo,updateVideoDetails,deleteVideo,getVideo,togglePublishStatus}
