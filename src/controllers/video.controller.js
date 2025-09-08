@@ -158,7 +158,7 @@ const getAllVideos = asyncHandler( async (req,res) => {
 })
 
 const getMyVideos = asyncHandler( async(req,res) => {
-    const myVideos = await Video.findById({owner : req.user._id})
+    const myVideos = await Video.find({owner : req.user._id})
 
     if (myVideos.length === 0) {
         throw new apiError(402,"No Videos Found !")
