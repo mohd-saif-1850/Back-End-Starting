@@ -64,7 +64,7 @@ const deleteTweet = asyncHandler( async(req,res) => {
 
 const getUserTweets = asyncHandler( async(req,res) => {
 
-    const getTweets = Tweet.findById(req.user._id)
+    const getTweets = await Tweet.find({owner : req.user._id})
 
     if (getTweets.length === 0) {
         throw new apiError(400,"No Tweets Found !")
