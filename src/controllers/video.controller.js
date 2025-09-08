@@ -120,4 +120,29 @@ const deleteVideo = asyncHandler( async (req,res) => {
     return res.status(200).json(new apiResponse(200,deleted,"Video Deleted Successfully !"))
 })
 
+const togglePublishStatus = asyncHandler(async (req, res) => {
+    const { videoId } = req.body
+
+    if (!videoId) {
+        throw new apiError(402,"Video Id is Required !")
+    }
+
+    const video = await Video.findById(videoId)
+
+    if (!video) {
+        throw new apiError(402,"Video not Found !")
+    }
+
+    newStatus = !video.isPublished
+
+    const togglePublish = await Video.findByIdAndUpdate(videoId,{
+        $set : {isPublished : newStatus}
+    },{new: true})
+
+    if (!togglePublish) {
+        throw new apiError(500,"Server Error while Changing the Mode of Video !")
+    }
+    return res.status(200).json(new apiResponse(200,togglePublish,`Video set to Public ${togglePublish.isPublished ? "Public" : "Private"} !`))
+})
+
 export {uploadVideo,updateVideoDetails,deleteVideo,getVideo}
