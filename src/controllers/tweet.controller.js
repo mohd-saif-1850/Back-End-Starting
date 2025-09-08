@@ -6,14 +6,14 @@ import {Tweet} from "../models/tweets.model.js"
 
 
 const createTweet = asyncHandler( async(req,res) => {
-    const {tweet} = req.body
+    const {content} = req.body
 
-    if (!tweet) {
-        throw new apiError(402,"Tweet is Required !")
+    if (!content) {
+        throw new apiError(402,"Content is Required !")
     }
 
     const tweetCreation = await Tweet.create({
-        tweet,
+        content,
         owner: req.user._id
     })
 
@@ -21,7 +21,7 @@ const createTweet = asyncHandler( async(req,res) => {
         throw new apiError(500,"Server Failed to Create !")
     }
 
-    return res.status(200).json(new apiResponse(200,tweetCreation,"Tweet Create Successfully !"))
+    return res.status(200).json(new apiResponse(200,tweetCreation,"Tweet Created Successfully !"))
 })
 
 export {createTweet}
