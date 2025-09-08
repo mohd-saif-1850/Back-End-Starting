@@ -133,7 +133,7 @@ const togglePublishStatus = asyncHandler(async (req, res) => {
         throw new apiError(402,"Video not Found !")
     }
 
-    newStatus = !video.isPublished
+    const newStatus = !video.isPublished
 
     const togglePublish = await Video.findByIdAndUpdate(videoId,{
         $set : {isPublished : newStatus}
@@ -142,6 +142,7 @@ const togglePublishStatus = asyncHandler(async (req, res) => {
     if (!togglePublish) {
         throw new apiError(500,"Server Error while Changing the Mode of Video !")
     }
+    
     return res.status(200).json(new apiResponse(200,togglePublish,`Video set to Public ${togglePublish.isPublished ? "Public" : "Private"} !`))
 })
 
