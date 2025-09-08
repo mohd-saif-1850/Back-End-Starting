@@ -25,18 +25,18 @@ const createTweet = asyncHandler( async(req,res) => {
 })
 
 const updateTweet = asyncHandler( async(req,res) => {
-    const {tweetId, content} = req.body
+    const {tweetId, newContent} = req.body
 
     if (!tweetId) {
         throw new apiError(402,"Tweet ID is Required !")
     }
 
-    if (!content) {
+    if (!newContent) {
         throw new apiError(402,"Content is Required !")
     }
 
-    const newTweet = await Tweet.findById(tweetId,{
-        $set : {content}
+    const newTweet = await Tweet.findByIdAndUpdate(tweetId,{
+        $set : {content : newContent}
     },{new : true})
 
     if (!newTweet) {
