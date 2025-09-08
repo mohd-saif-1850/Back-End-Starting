@@ -58,6 +58,22 @@ const uploadVideo = asyncHandler( async (req,res) => {
 
 })
 
+const getVideo = asyncHandler( async (req,res) => {
+    const {videoId} = req.body
+
+    if (!videoId) {
+    throw new apiError(400, "Video ID is required!");
+    }
+
+    const video = await Video.findById(videoId).populate("owner", "username");
+
+    if (!video) {
+        throw new apiError(404, "Video not found!");
+    }
+
+    return res.status(200).json(new apiResponse(200,video,"Video Fetched Successfully !"))
+})
+
 const updateVideoDetails = asyncHandler( async (req, res) => {
     const {title, description, videoId} = req.body
 
