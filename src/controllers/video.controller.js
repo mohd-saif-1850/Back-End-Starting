@@ -142,8 +142,8 @@ const togglePublishStatus = asyncHandler(async (req, res) => {
     if (!togglePublish) {
         throw new apiError(500,"Server Error while Changing the Mode of Video !")
     }
-    
-    return res.status(200).json(new apiResponse(200,togglePublish,`Video set to Public ${togglePublish.isPublished ? "Public" : "Private"} !`))
+
+    return res.status(200).json(new apiResponse(200,togglePublish,`Video set to ${togglePublish.isPublished ? "Public" : "Private"} !`))
 })
 
 export {uploadVideo,updateVideoDetails,deleteVideo,getVideo,togglePublishStatus}
