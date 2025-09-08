@@ -7,6 +7,6 @@ const router = Router()
     router.route("/create-comment").post(verifyJWT,createComment)
     router.route("/update-comment").patch(verifyJWT,updateComment)
     router.route("/delete-comment").delete(verifyJWT,deleteComment)
-    router.route("/user-comments").get(verifyJWT,userComments)
+    router.route("/user-comments").get(verifyJWT,userComments )
 
 export default router;
