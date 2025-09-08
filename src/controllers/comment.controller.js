@@ -49,4 +49,20 @@ const updateComment = asyncHandler( async(req,res) => {
     return res.status(200).json(new apiResponse(200,updateComment,"Comment Updated Successfully !"))
 })
 
-export {createComment,updateComment}
+const deleteComment = asyncHandler( async(req,res) => {
+    const {commentId} = req.body
+
+    if (!commentId) {
+        throw new apiError(402,"Comment ID is Required !")
+    }
+
+    const deleteCmt = await Comment.findByIdAndDelete(commentId)
+
+    if (!deleteCmt) {
+        throw new apiError(500,"Server Failed to Delete a Comment !")
+    }
+
+    return res.status(200).json(new apiResponse(200,deleteCmt,"Comment Deleted Successfully !"))
+})
+
+export {createComment,updateComment,deleteComment}
