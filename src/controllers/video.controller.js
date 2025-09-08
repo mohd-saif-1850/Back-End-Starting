@@ -120,4 +120,4 @@ const deleteVideo = asyncHandler( async (req,res) => {
     return res.status(200).json(new apiResponse(200,deleted,"Video Deleted Successfully !"))
 })
 
-export {uploadVideo,updateVideoDetails,deleteVideo}
+export {uploadVideo,updateVideoDetails,deleteVideo,getVideo}
