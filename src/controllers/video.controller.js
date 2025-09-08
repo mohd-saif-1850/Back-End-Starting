@@ -164,7 +164,7 @@ const getMyVideos = asyncHandler( async(req,res) => {
         throw new apiError(402,"No Videos Found !")
     }
 
-    return res.status(200,myVideos,"My Videos Fetched Successfully !")
+    return res.status(200).json(new apiResponse(200,myVideos,"My Videos Fetched Successfully !"))
 })
 
 
