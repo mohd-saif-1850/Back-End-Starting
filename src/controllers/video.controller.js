@@ -146,4 +146,15 @@ const togglePublishStatus = asyncHandler(async (req, res) => {
     return res.status(200).json(new apiResponse(200,togglePublish,`Video set to ${togglePublish.isPublished ? "Public" : "Private"} !`))
 })
 
-export {uploadVideo,updateVideoDetails,deleteVideo,getVideo,togglePublishStatus}
+const getAllVideos = asyncHandler( async (req,res) => {
+    
+    const allVideos = await Video.find()
+
+    if (!allVideos) {
+        throw new apiError(402,"No Videos Found !")
+    }
+
+    return res.status(200).json(new apiResponse(200,allVideos,"All Videos Fetched Successfully !"))
+})
+
+export {uploadVideo,updateVideoDetails,deleteVideo,getVideo,togglePublishStatus,getAllVideos}
