@@ -88,4 +88,20 @@ const updateVideoDetails = asyncHandler( async (req, res) => {
     .json(new apiResponse(200,updateDetails,"Title and Description Updated Successfully !"))
 })
 
+const deleteVideo = asyncHandler( async (req,res) => {
+    const {videoId} = req.body
+
+    if (!videoId) {
+        throw new apiError(402,"Video Id is Required !")
+    }
+
+    const deleted = await Video.findByIdAndDelete(videoId)
+
+    if (!deleted) {
+        throw new apiError("Error occurs while Deleting a Video !")
+    }
+
+    return res.status(200).json(new apiResponse(200,deleted,"Video Deleted Successfully !"))
+})
+
 export {uploadVideo,updateVideoDetails}
