@@ -59,7 +59,7 @@ const uploadVideo = asyncHandler( async (req,res) => {
 })
 
 const updateVideoDetails = asyncHandler( async (req, res) => {
-    const {title, description} = req.body
+    const {title, description, videoId} = req.body
 
     if (!title) {
         throw new apiError(402,"Title is required !")
@@ -69,7 +69,11 @@ const updateVideoDetails = asyncHandler( async (req, res) => {
         throw new apiError(402,"Description is required !")
     }
 
-    const updateDetails = await Video.findByIdAndUpdate(req.params._id,{
+    if (!videoId) {
+        throw new apiError(402,"Video Id is Required !")
+    }
+
+    const updateDetails = await Video.findByIdAndUpdate(videoId,{
         $set : {
             title,
             description
