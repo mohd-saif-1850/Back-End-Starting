@@ -47,6 +47,6 @@ const router = Router()
     ) ,uploadVideo)
     router.route("/update-video-details").patch(verifyJWT,updateVideoDetails)
     
-    router.route("/video-delete").post(verifyJWT,deleteVideo)
+    router.route("/video-delete").delete(verifyJWT,deleteVideo)
     
 export default router;
