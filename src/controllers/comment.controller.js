@@ -27,4 +27,26 @@ const createComment = asyncHandler( async(req,res) => {
     return res.status(200).json(new apiResponse(200,comment,"Comment Created Successfully !"))
 })
 
-export {createComment}
+const updateComment = asyncHandler( async(req,res) => {
+    const {content,commentId} = req.body
+
+    if (!content) {
+        throw new apiError(402,"Content is Required !")
+    }
+
+    if (!commentId) {
+        throw new apiError(402,"Comment ID is Required !")
+    }
+
+    const updatedComment = await Comment.findByIdAndUpdate(commentId,{
+        $set : {content}
+    },{new: true})
+
+    if (!updateComment) {
+        throw new apiError(500,"Server Failed to Update a Comment !")
+    }
+
+    return res.status(200).json(new apiResponse(200,updateComment,"Comment Updated Successfully !"))
+})
+
+export {createComment,updateComment}
