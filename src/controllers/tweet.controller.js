@@ -62,4 +62,15 @@ const deleteTweet = asyncHandler( async(req,res) => {
     return res.status(200).json(new apiResponse(200,tweetDelete,"Tweet Deleted Successfully !"))
 })
 
-export {createTweet,updateTweet,deleteTweet}
+const getUserTweets = asyncHandler( async(req,res) => {
+
+    const getTweets = Tweet.findById(req.user._id)
+
+    if (getTweets.length === 0) {
+        throw new apiError(400,"No Tweets Found !")
+    }
+
+    return res.status(200).json(new apiResponse(200,getTweets,"Tweets Fetched Successfully !"))
+})
+
+export {createTweet,updateTweet,deleteTweet,getUserTweets}
